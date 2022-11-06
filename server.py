@@ -23,12 +23,14 @@ def createArticles(user_id, title, content):
 
 
 def getArticles():
-    data = supabase.table("posts").select("*").execute()
+    data = supabase.table("posts").select(
+        "*, profiles(raw_user_meta_data)").execute()
     return data.data
 
 
 def getArticlesById(id):
-    data = supabase.table("posts").select("*").eq('id', id).execute()
+    data = supabase.table("posts").select(
+        "*, profiles(raw_user_meta_data)").eq('id', id).execute()
     return data.data
 
 
@@ -52,7 +54,7 @@ def restGetArticles():
 def restGetArticlesById(id):
     res = getArticlesById(id)
 
-    return jsonify(res), 201
+    return jsonify(res), 200
 
 
 @app.route('/articles/<id>', methods=['DELETE'])
@@ -70,10 +72,11 @@ def createUser():
     email = data['email']
     password = data['password']
 
-    user = supabase.auth.sign_in(email=email, password=password)
+    user = supabase.auth.sign_up(email=email, password=password)
+    print(user)
 
-    return jsonify(user), 201
+    return jsonify(user.dict()), 201
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=4000)
