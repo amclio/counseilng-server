@@ -24,7 +24,7 @@ def createArticles(user_id, title, content):
 
 def getArticles():
     data = supabase.table("posts").select(
-        "*, profiles(raw_user_meta_data)").execute()
+        "*, profiles(raw_user_meta_data)").order('id', desc=False).execute()
     return data.data
 
 
